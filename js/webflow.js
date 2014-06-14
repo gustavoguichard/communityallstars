@@ -511,6 +511,450 @@ window.tram=function(t){function i(t,i){var e=new Z.Bare;return e.init(t,i)}func
 Webflow.init();
 /**
  * ----------------------------------------------------------------------
+ * Webflow: Interactions
+ */
+Webflow.define('ix', function ($, _) {
+  'use strict';
+
+  var api = {};
+  var designer;
+  var $win = $(window);
+  var namespace = '.w-ix';
+  var tram = window.tram;
+  var env = Webflow.env;
+  var ios = env.ios;
+  var inApp = env();
+  var emptyFix = env.chrome && env.chrome < 35;
+  var transNone = 'none 0s ease 0s';
+  var introEvent = 'w-ix-intro' + namespace;
+  var outroEvent = 'w-ix-outro' + namespace;
+  var eventQueue = [];
+  var $subs = $();
+  var config = {};
+  var anchors = [];
+  var loads = [];
+  var readys = [];
+  var unique = 0;
+  var store;
+
+  // -----------------------------------
+  // Module methods
+
+  api.init = function (list) {
+    setTimeout(function () { init(list); }, 1);
+  };
+
+  api.preview = function () {
+    designer = false;
+    setTimeout(function () { init(window.__wf_ix); }, 1);
+  };
+
+  api.design = function () {
+    designer = true;
+    $subs.each(teardown);
+    Webflow.scroll.off(scroll);
+    asyncEvents();
+    anchors = [];
+    loads = [];
+    readys = [];
+  };
+
+  api.run = run;
+  api.events = {};
+  api.style = inApp ? styleApp : stylePub;
+
+  // -----------------------------------
+  // Private methods
+
+  function init(list) {
+    if (!list) return;
+    store = {};
+
+    // Map all interactions to a hash using slug as key.
+    config = {};
+    _.each(list, function (item) {
+      config[item.slug] = item.value;
+    });
+
+    // Build each element's interaction keying from data attribute
+    var els = $('[data-ix]');
+    els.each(teardown);
+    els.each(build);
+
+    // Listen for scroll events if any anchors exist
+    if (anchors.length) {
+      Webflow.scroll.on(scroll);
+      setTimeout(scroll, 1);
+    }
+
+    // Handle loads or readys if they exist
+    if (loads.length) $win.on('load', runLoads);
+    if (readys.length) setTimeout(runReadys, 1);
+
+    // Init module events
+    initEvents();
+  }
+
+  function build(i, el) {
+    var $el = $(el);
+    var id = $el.attr('data-ix');
+    var ix = config[id];
+    if (!ix) return;
+    var triggers = ix.triggers;
+    if (!triggers) return;
+    var state = store[id] || (store[id] = {});
+    var $proxy;
+
+    // Set initial styles, unless we detect an iOS device + any non-iOS triggers
+    var setStyles = !(ios && _.any(triggers, isNonIOS));
+    if (setStyles) api.style($el, ix.style);
+
+    _.each(triggers, function (trigger) {
+      var type = trigger.type;
+      var stepsB = trigger.stepsB && trigger.stepsB.length;
+
+      function runA() { run(trigger, $el, { group: 'A' }); }
+      function runB() { run(trigger, $el, { group: 'B' }); }
+
+      if (type == 'load') {
+        (trigger.preload && !inApp) ? loads.push(runA) : readys.push(runA);
+        return;
+      }
+
+      if (type == 'click') {
+        var stateKey = 'click:' + unique++;
+        if (trigger.descend) stateKey += ':descend';
+        if (trigger.siblings) stateKey += ':siblings';
+        if (trigger.selector) stateKey += ':' + trigger.selector;
+
+        $el.on('click' + namespace, function (evt) {
+          if ($el.attr('href') === '#') evt.preventDefault();
+
+          run(trigger, $el, { group: state[stateKey] ? 'B' : 'A' });
+          if (stepsB) state[stateKey] = !state[stateKey];
+        });
+        $subs = $subs.add($el);
+        return;
+      }
+
+      if (type == 'hover') {
+        $el.on('mouseenter' + namespace, runA);
+        $el.on('mouseleave' + namespace, runB);
+        $subs = $subs.add($el);
+        return;
+      }
+
+      if (type == 'tabs') {
+        $proxy = $el.closest('.w-tab-link, .w-tab-pane');
+        $proxy.on(introEvent, runA).on(outroEvent, runB);
+        $subs = $subs.add($proxy);
+        return;
+      }
+
+      if (type == 'slider') {
+        $proxy = $el.closest('.w-slide');
+        $proxy.on(introEvent, runA).on(outroEvent, runB);
+        $subs = $subs.add($proxy);
+        return;
+      }
+
+      // Ignore the following triggers on iOS devices
+      if (ios) return;
+
+      if (type == 'scroll') {
+        anchors.push({
+          el: $el, trigger: trigger, state: { active: false },
+          offsetTop: convert(trigger.offsetTop),
+          offsetBot: convert(trigger.offsetBot)
+        });
+        return;
+      }
+    });
+  }
+
+  function isNonIOS(trigger) {
+    return trigger.type == 'scroll';
+  }
+
+  function convert(offset) {
+    if (!offset) return 0;
+    offset = offset + '';
+    var result = parseInt(offset, 10);
+    if (result !== result) return 0;
+    if (offset.indexOf('%') > 0) {
+      result = result / 100;
+      if (result >= 1) result = 0.999;
+    }
+    return result;
+  }
+
+  function teardown(i, el) {
+    $(el).off(namespace);
+  }
+
+  function scroll() {
+    var viewTop = $win.scrollTop();
+    var viewHeight = $win.height();
+
+    // Check each anchor for a valid scroll trigger
+    var count = anchors.length;
+    for (var i = 0; i < count; i++) {
+      var anchor = anchors[i];
+      var $el = anchor.el;
+      var trigger = anchor.trigger;
+      var stepsB = trigger.stepsB && trigger.stepsB.length;
+      var state = anchor.state;
+      var top = $el.offset().top;
+      var height = $el.outerHeight();
+      var offsetTop = anchor.offsetTop;
+      var offsetBot = anchor.offsetBot;
+      if (offsetTop < 1 && offsetTop > 0) offsetTop *= viewHeight;
+      if (offsetBot < 1 && offsetBot > 0) offsetBot *= viewHeight;
+      var active = (top + height - offsetTop >= viewTop && top + offsetBot <= viewTop + viewHeight);
+      if (active === state.active) continue;
+      if (active === false && !stepsB) continue;
+      state.active = active;
+      run(trigger, $el, { group: active ? 'A' : 'B' });
+    }
+  }
+
+  function runLoads() {
+    var count = loads.length;
+    for (var i = 0; i < count; i++) {
+      loads[i]();
+    }
+  }
+
+  function runReadys() {
+    var count = readys.length;
+    for (var i = 0; i < count; i++) {
+      readys[i]();
+    }
+  }
+
+  function run(trigger, $el, opts, replay) {
+    opts = opts || {};
+    var done = opts.done;
+
+    // Do not run in designer unless forced
+    if (designer && !opts.force) return;
+
+    // Operate on a set of grouped steps
+    var group = opts.group || 'A';
+    var loop = trigger['loop' + group];
+    var steps = trigger['steps' + group];
+    if (!steps || !steps.length) return;
+    if (steps.length < 2) loop = false;
+
+    // One-time init before any loops
+    if (!replay) {
+
+      // Find selector within element descendants, siblings, or query whole document
+      var selector = trigger.selector;
+      if (selector) {
+        $el = (
+          trigger.descend ? $el.find(selector) :
+          trigger.siblings ? $el.siblings(selector) :
+          $(selector)
+        );
+        if (inApp) $el.attr('data-ix-affect', 1);
+      }
+
+      // Apply empty fix for certain Chrome versions
+      if (emptyFix) $el.addClass('w-ix-emptyfix');
+    }
+
+    var _tram = tram($el);
+
+    // Add steps
+    var meta = {};
+    for (var i = 0; i < steps.length; i++) {
+      addStep(_tram, steps[i], meta);
+    }
+
+    function fin() {
+      // Run trigger again if looped
+      if (loop) return run(trigger, $el, opts, true);
+
+      // Reset any 'auto' values
+      if (meta.width == 'auto') _tram.set({ width: 'auto' });
+      if (meta.height == 'auto') _tram.set({ height: 'auto' });
+
+      // Run callback
+      done && done();
+    }
+
+    // Add final step to queue if tram has started
+    meta.start ? _tram.then(fin) : fin();
+  }
+
+  function addStep(_tram, step, meta) {
+    var addMethod = 'add';
+    var startMethod = 'start';
+
+    // Once the transition has started, we will always use then() to add to the queue.
+    if (meta.start) addMethod = startMethod = 'then';
+
+    // Parse transitions string on the current step
+    var transitions = step.transition;
+    if (transitions) {
+      transitions = transitions.split(',');
+      for (var i = 0; i < transitions.length; i++) {
+        _tram[addMethod](transitions[i]);
+      }
+    }
+
+    // Build a clean object to pass to the tram method
+    var clean = tramify(step) || {};
+
+    // Store last width and height values
+    if (clean.width != null) meta.width = clean.width;
+    if (clean.height != null) meta.height = clean.height;
+
+    // When transitions are not present, set values immediately and continue queue.
+    if (transitions == null) {
+
+      // If we have started, wrap set() in then() and reset queue
+      if (meta.start) {
+        _tram.then(function () {
+          var queue = this.queue;
+          this.set(clean);
+          if (clean.display) {
+            _tram.redraw();
+            Webflow.redraw.up();
+          }
+          this.queue = queue;
+          this.next();
+        });
+      } else {
+        _tram.set(clean);
+
+        // Always redraw after setting display
+        if (clean.display) {
+          _tram.redraw();
+          Webflow.redraw.up();
+        }
+      }
+
+      // Use the wait() method to kick off queue in absence of transitions.
+      var wait = clean.wait;
+      if (wait != null) {
+        _tram.wait(wait);
+        meta.start = true;
+      }
+
+    // Otherwise, when transitions are present
+    } else {
+
+      // If display is present, handle it separately
+      if (clean.display) {
+        var display = clean.display;
+        delete clean.display;
+
+        // If we've already started, we need to wrap it in a then()
+        if (meta.start) {
+          _tram.then(function () {
+            var queue = this.queue;
+            this.set({ display: display }).redraw();
+            Webflow.redraw.up();
+            this.queue = queue;
+            this.next();
+          });
+        } else {
+          _tram.set({ display: display }).redraw();
+          Webflow.redraw.up();
+        }
+      }
+
+      // Otherwise, start a transition using the current start method.
+      _tram[startMethod](clean);
+      meta.start = true;
+    }
+  }
+
+  // (In app) Set styles immediately and manage upstream transition
+  function styleApp(el, data) {
+    var _tram = tram(el);
+
+    // Get computed transition value
+    el.css('transition', '');
+    var computed = el.css('transition');
+
+    // If computed is disabled, clear upstream
+    if (computed === transNone) computed = _tram.upstream = null;
+
+    // Disable upstream temporarily
+    _tram.upstream = transNone;
+
+    // Set values immediately
+    _tram.set(tramify(data));
+
+    // Only restore upstream in preview mode
+    _tram.upstream = computed;
+  }
+
+  // (Published) Set styles immediately on specified jquery element
+  function stylePub(el, data) {
+    tram(el).set(tramify(data));
+  }
+
+  // Build a clean object for tram
+  function tramify(obj) {
+    var result = {};
+    var found = false;
+    for (var x in obj) {
+      if (x === 'transition') continue;
+      result[x] = obj[x];
+      found = true;
+    }
+    // If empty, return null for tram.set/stop compliance
+    return found ? result : null;
+  }
+
+  // Events used by other webflow modules
+  var events = {
+    reset: function (i, el) {
+      el.__wf_intro = null;
+    },
+    intro: function (i, el) {
+      if (el.__wf_intro) return;
+      el.__wf_intro = true;
+      $(el).triggerHandler(introEvent);
+    },
+    outro: function (i, el) {
+      if (!el.__wf_intro) return;
+      el.__wf_intro = null;
+      $(el).triggerHandler(outroEvent);
+    }
+  };
+
+  // Trigger events in queue + point to sync methods
+  function initEvents() {
+    var count = eventQueue.length;
+    for (var i = 0; i < count; i++) {
+      var memo = eventQueue[i];
+      memo[0](0, memo[1]);
+    }
+    eventQueue = [];
+    $.extend(api.events, events);
+  }
+
+  // Replace events with async methods prior to init
+  function asyncEvents() {
+    _.each(events, function (func, name) {
+      api.events[name] = function (i, el) {
+        eventQueue.push([func, el]);
+      };
+    });
+  }
+
+  asyncEvents();
+
+  // Export module
+  return api;
+});
+/**
+ * ----------------------------------------------------------------------
  * Webflow: Touch events for jQuery based on tap.js
  */
 Webflow.define('touch', function ($, _) {
@@ -839,10 +1283,11 @@ Webflow.define('forms', function ($, _) {
     var fullName;
     _.each(payload, function (value, key) {
       if (emailField.test(key)) payload.EMAIL = value;
-      if (/^(name|full(\-)?name)$/i.test(key)) fullName = value;
-      if (/^(first(\-)?name)$/i.test(key)) payload.FNAME = value;
-      if (/^(last(\-)?name)$/i.test(key)) payload.LNAME = value;
+      if (/^((full[ _-]?)?name)$/i.test(key)) fullName = value;
+      if (/^(first[ _-]?name)$/i.test(key)) payload.FNAME = value;
+      if (/^(last[ _-]?name)$/i.test(key)) payload.LNAME = value;
     });
+
     if (fullName && !payload.FNAME) {
       fullName = fullName.split(' ');
       payload.FNAME = fullName[0];
@@ -1360,6 +1805,8 @@ Webflow.define('slider', function ($, _) {
   var inApp = Webflow.env();
   var namespace = '.w-slider';
   var dot = '<div class="w-slider-dot" data-wf-ignore />';
+  var ix = Webflow.require('ix');
+  ix = ix && ix.events;
   var fallback;
   var redraw;
 
@@ -1419,6 +1866,7 @@ Webflow.define('slider', function ($, _) {
     data.right = $el.children('.w-slider-arrow-right');
     data.nav = $el.children('.w-slider-nav');
     data.slides = data.mask.children('.w-slide');
+    if (ix) data.slides.each(ix.reset);
     if (redraw) data.maskWidth = 0;
 
     // Disable in old browsers
@@ -1448,6 +1896,7 @@ Webflow.define('slider', function ($, _) {
       data.el.on('swipe' + namespace, handler(data));
       data.left.on('tap' + namespace, previous(data));
       data.right.on('tap' + namespace, next(data));
+
       // Start timer if autoplay is true, only once
       if (data.config.autoplay && !data.hasTimer) {
         data.hasTimer = true;
@@ -1643,6 +2092,12 @@ Webflow.define('slider', function ($, _) {
     var vector = options.vector || (data.index > data.previous ? 1 : -1);
     var fadeRule = 'opacity ' + duration + 'ms ' + easing;
     var slideRule = 'transform ' + duration + 'ms ' + easing;
+
+    // Trigger IX events
+    if (!designer && ix) {
+      targets.each(ix.intro);
+      others.each(ix.outro);
+    }
 
     // Set immediately after layout changes (but not during redraw)
     if (options.immediate && !redraw) {
@@ -2157,6 +2612,7 @@ Webflow.define('tabs', function ($, _) {
   var namespace = '.w-tabs';
   var linkCurrent = 'w--current';
   var tabActive = 'w--tab-active';
+  var ix = Webflow.require('ix').events;
 
   // -----------------------------------
   // Module methods
@@ -2197,17 +2653,11 @@ Webflow.define('tabs', function ($, _) {
     if (!design) {
       data.links.on('click' + namespace, linkSelect(data));
 
-      // Trigger first intro event when IX is ready
-      $win.one('ix-ready.webflow', ixReady(data));
-    }
-  }
-
-  function ixReady(data) {
-    return function (evt) {
+      // Trigger first intro event from current tab
       var $link = data.links.filter('.' + linkCurrent);
       var tab = $link.attr(tabAttr);
       tab && changeTab(data, { tab: tab, immediate: true });
-    };
+    }
   }
 
   function configure(data) {
@@ -2250,8 +2700,8 @@ Webflow.define('tabs', function ($, _) {
     // Select the current link
     data.links.each(function (i, el) {
       var $el = $(el);
-      if (el.getAttribute(tabAttr) === tab) $el.addClass(linkCurrent).each(triggerIntro);
-      else if ($el.hasClass(linkCurrent)) $el.removeClass(linkCurrent).each(triggerOutro);
+      if (el.getAttribute(tabAttr) === tab) $el.addClass(linkCurrent).each(ix.intro);
+      else if ($el.hasClass(linkCurrent)) $el.removeClass(linkCurrent).each(ix.outro);
     });
 
     // Find the new tab panes and keep track of previous
@@ -2271,14 +2721,15 @@ Webflow.define('tabs', function ($, _) {
 
     // Switch tabs immediately and bypass transitions
     if (options.immediate || config.immediate) {
-      $targets.addClass(tabActive).each(triggerIntro);
+      $targets.addClass(tabActive).each(ix.intro);
       $previous.removeClass(tabActive);
+      Webflow.redraw.up();
       return;
     }
 
     // Fade out the currently active tab before intro
     if ($previous.length && config.outro) {
-      $previous.each(triggerOutro);
+      $previous.each(ix.outro);
       tram($previous)
         .add('opacity ' + config.outro + 'ms ' + easing, { fallback: safari })
         .start({ opacity: 0 })
@@ -2294,7 +2745,8 @@ Webflow.define('tabs', function ($, _) {
       $previous.removeClass(tabActive).removeAttr('style');
 
       // Add active class to new target
-      $targets.addClass(tabActive).each(triggerIntro);
+      $targets.addClass(tabActive).each(ix.intro);
+      Webflow.redraw.up();
 
       // Set opacity immediately if intro is zero
       if (!config.intro) return tram($targets).set({ opacity: 1 });
@@ -2306,409 +2758,6 @@ Webflow.define('tabs', function ($, _) {
         .add('opacity ' + config.intro + 'ms ' + easing, { fallback: safari })
         .start({ opacity: 1 });
     }
-  }
-
-  function triggerIntro(i, el) {
-    $(el).triggerHandler('w-ix-intro');
-  }
-
-  function triggerOutro(i, el) {
-    $(el).triggerHandler('w-ix-outro');
-  }
-
-  // Export module
-  return api;
-});
-/**
- * ----------------------------------------------------------------------
- * Webflow: Interactions
- */
-Webflow.define('ix', function ($, _) {
-  'use strict';
-
-  var api = {};
-  var designer;
-  var $win = $(window);
-  var namespace = '.w-ix';
-  var tram = window.tram;
-  var env = Webflow.env;
-  var ios = env.ios;
-  var inApp = env();
-  var emptyFix = env.chrome && env.chrome < 35;
-  var transNone = 'none 0s ease 0s';
-  var introEvent = 'w-ix-intro';
-  var outroEvent = 'w-ix-outro';
-  var config = {};
-  var anchors = [];
-  var loads = [];
-  var readys = [];
-  var unique = 0;
-  var store;
-
-  // -----------------------------------
-  // Module methods
-
-  api.init = function (list) {
-    setTimeout(function () { init(list); }, 1);
-  };
-
-  api.preview = function () {
-    designer = false;
-    setTimeout(function () { init(window.__wf_ix); }, 1);
-  };
-
-  api.design = function () {
-    designer = true;
-    $('[data-ix]').each(teardown);
-    Webflow.scroll.off(scroll);
-    anchors = [];
-    loads = [];
-    readys = [];
-  };
-
-  api.run = run;
-  api.style = inApp ? styleApp : stylePub;
-
-  // -----------------------------------
-  // Private methods
-
-  function init(list) {
-    if (!list) return;
-    store = {};
-
-    // Map all interactions to a hash using slug as key.
-    config = {};
-    _.each(list, function (item) {
-      config[item.slug] = item.value;
-    });
-
-    // Build each element's interaction keying from data attribute
-    var els = $('[data-ix]');
-    els.each(teardown);
-    els.each(build);
-
-    // Listen for scroll events if any anchors exist
-    if (anchors.length) {
-      Webflow.scroll.on(scroll);
-      setTimeout(scroll, 1);
-    }
-
-    // Handle loads or readys if they exist
-    if (loads.length) $win.on('load', runLoads);
-    if (readys.length) setTimeout(runReadys, 1);
-
-    // Trigger event for other modules
-    $win.triggerHandler('ix-ready.webflow');
-  }
-
-  function build(i, el) {
-
-    var $el = $(el);
-    var id = $el.attr('data-ix');
-    var ix = config[id];
-    if (!ix) return;
-    var triggers = ix.triggers;
-    if (!triggers) return;
-    var state = store[id] || (store[id] = {});
-
-    // Set initial styles, unless we detect an iOS device + any non-iOS triggers
-    var setStyles = !(ios && _.any(triggers, isNonIOS));
-    if (setStyles) api.style($el, ix.style);
-
-    _.each(triggers, function (trigger) {
-      var type = trigger.type;
-      var stepsB = trigger.stepsB && trigger.stepsB.length;
-
-      function runA() { run(trigger, $el, { group: 'A' }); }
-      function runB() { run(trigger, $el, { group: 'B' }); }
-
-      if (type == 'load') {
-        (trigger.preload && !inApp) ? loads.push(runA) : readys.push(runA);
-        return;
-      }
-
-      if (type == 'click') {
-        var stateKey = 'click:' + unique++;
-        if (trigger.descend) stateKey += ':descend';
-        if (trigger.siblings) stateKey += ':siblings';
-        if (trigger.selector) stateKey += ':' + trigger.selector;
-
-        $el.on('click' + namespace, function (evt) {
-          if ($el.attr('href') === '#') evt.preventDefault();
-
-          run(trigger, $el, { group: state[stateKey] ? 'B' : 'A' });
-          if (stepsB) state[stateKey] = !state[stateKey];
-        });
-        return;
-      }
-
-      if (type == 'hover') {
-        $el.on('mouseenter' + namespace, runA);
-        $el.on('mouseleave' + namespace, runB);
-        return;
-      }
-
-      if (type == 'tabs') {
-        $el.closest('.w-tab-link, .w-tab-pane').on(introEvent, runA).on(outroEvent, runB);
-        return;
-      }
-
-      if (type == 'slider') {
-        $el.closest('.w-slide').on(introEvent, runA).on(outroEvent, runB);
-        return;
-      }
-
-      // Ignore the following triggers on iOS devices
-      if (ios) return;
-
-      if (type == 'scroll') {
-        anchors.push({
-          el: $el, trigger: trigger, state: { active: false },
-          offsetTop: convert(trigger.offsetTop),
-          offsetBot: convert(trigger.offsetBot)
-        });
-        return;
-      }
-    });
-  }
-
-  function isNonIOS(trigger) {
-    return trigger.type == 'scroll';
-  }
-
-  function convert(offset) {
-    if (!offset) return 0;
-    offset = offset + '';
-    var result = parseInt(offset, 10);
-    if (result !== result) return 0;
-    if (offset.indexOf('%') > 0) {
-      result = result / 100;
-      if (result >= 1) result = 0.999;
-    }
-    return result;
-  }
-
-  function teardown(i, el) {
-    $(el).off(namespace);
-  }
-
-  function scroll() {
-    var viewTop = $win.scrollTop();
-    var viewHeight = $win.height();
-
-    // Check each anchor for a valid scroll trigger
-    var count = anchors.length;
-    for (var i = 0; i < count; i++) {
-      var anchor = anchors[i];
-      var $el = anchor.el;
-      var trigger = anchor.trigger;
-      var stepsB = trigger.stepsB && trigger.stepsB.length;
-      var state = anchor.state;
-      var top = $el.offset().top;
-      var height = $el.outerHeight();
-      var offsetTop = anchor.offsetTop;
-      var offsetBot = anchor.offsetBot;
-      if (offsetTop < 1 && offsetTop > 0) offsetTop *= viewHeight;
-      if (offsetBot < 1 && offsetBot > 0) offsetBot *= viewHeight;
-      var active = (top + height - offsetTop >= viewTop && top + offsetBot <= viewTop + viewHeight);
-      if (active === state.active) continue;
-      if (active === false && !stepsB) continue;
-      state.active = active;
-      run(trigger, $el, { group: active ? 'A' : 'B' });
-    }
-  }
-
-  function runLoads() {
-    var count = loads.length;
-    for (var i = 0; i < count; i++) {
-      loads[i]();
-    }
-  }
-
-  function runReadys() {
-    var count = readys.length;
-    for (var i = 0; i < count; i++) {
-      readys[i]();
-    }
-  }
-
-  function run(trigger, $el, opts, replay) {
-    opts = opts || {};
-    var done = opts.done;
-
-    // Do not run in designer unless forced
-    if (designer && !opts.force) return;
-
-    // Operate on a set of grouped steps
-    var group = opts.group || 'A';
-    var loop = trigger['loop' + group];
-    var steps = trigger['steps' + group];
-    if (!steps || !steps.length) return;
-    if (steps.length < 2) loop = false;
-
-    // One-time init before any loops
-    if (!replay) {
-
-      // Find selector within element descendants, siblings, or query whole document
-      var selector = trigger.selector;
-      if (selector) {
-        $el = (
-          trigger.descend ? $el.find(selector) :
-          trigger.siblings ? $el.siblings(selector) :
-          $(selector)
-        );
-        if (inApp) $el.attr('data-ix-affect', 1);
-      }
-
-      // Apply empty fix for certain Chrome versions
-      if (emptyFix) $el.addClass('w-ix-emptyfix');
-    }
-
-    var _tram = tram($el);
-
-    // Add steps
-    var meta = {};
-    for (var i = 0; i < steps.length; i++) {
-      addStep(_tram, steps[i], meta);
-    }
-
-    function fin() {
-      // Run trigger again if looped
-      if (loop) return run(trigger, $el, opts, true);
-
-      // Reset any 'auto' values
-      if (meta.width == 'auto') _tram.set({ width: 'auto' });
-      if (meta.height == 'auto') _tram.set({ height: 'auto' });
-
-      // Run callback
-      done && done();
-    }
-
-    // Add final step to queue if tram has started
-    meta.start ? _tram.then(fin) : fin();
-  }
-
-  function addStep(_tram, step, meta) {
-    var addMethod = 'add';
-    var startMethod = 'start';
-
-    // Once the transition has started, we will always use then() to add to the queue.
-    if (meta.start) addMethod = startMethod = 'then';
-
-    // Parse transitions string on the current step
-    var transitions = step.transition;
-    if (transitions) {
-      transitions = transitions.split(',');
-      for (var i = 0; i < transitions.length; i++) {
-        _tram[addMethod](transitions[i]);
-      }
-    }
-
-    // Build a clean object to pass to the tram method
-    var clean = tramify(step) || {};
-
-    // Store last width and height values
-    if (clean.width != null) meta.width = clean.width;
-    if (clean.height != null) meta.height = clean.height;
-
-    // When transitions are not present, set values immediately and continue queue.
-    if (transitions == null) {
-
-      // If we have started, wrap set() in then() and reset queue
-      if (meta.start) {
-        _tram.then(function () {
-          var queue = this.queue;
-          this.set(clean);
-          if (clean.display) {
-            _tram.redraw();
-            Webflow.redraw.up();
-          }
-          this.queue = queue;
-          this.next();
-        });
-      } else {
-        _tram.set(clean);
-
-        // Always redraw after setting display
-        if (clean.display) {
-          _tram.redraw();
-          Webflow.redraw.up();
-        }
-      }
-
-      // Use the wait() method to kick off queue in absence of transitions.
-      var wait = clean.wait;
-      if (wait != null) {
-        _tram.wait(wait);
-        meta.start = true;
-      }
-
-    // Otherwise, when transitions are present
-    } else {
-
-      // If display is present, handle it separately
-      if (clean.display) {
-        var display = clean.display;
-        delete clean.display;
-
-        // If we've already started, we need to wrap it in a then()
-        if (meta.start) {
-          _tram.then(function () {
-            var queue = this.queue;
-            this.set({ display: display }).redraw();
-            Webflow.redraw.up();
-            this.queue = queue;
-            this.next();
-          });
-        } else {
-          _tram.set({ display: display }).redraw();
-          Webflow.redraw.up();
-        }
-      }
-
-      // Otherwise, start a transition using the current start method.
-      _tram[startMethod](clean);
-      meta.start = true;
-    }
-  }
-
-  // (In app) Set styles immediately and manage upstream transition
-  function styleApp(el, data) {
-    var _tram = tram(el);
-
-    // Get computed transition value
-    el.css('transition', '');
-    var computed = el.css('transition');
-
-    // If computed is disabled, clear upstream
-    if (computed === transNone) computed = _tram.upstream = null;
-
-    // Disable upstream temporarily
-    _tram.upstream = transNone;
-
-    // Set values immediately
-    _tram.set(tramify(data));
-
-    // Only restore upstream in preview mode
-    _tram.upstream = computed;
-  }
-
-  // (Published) Set styles immediately on specified jquery element
-  function stylePub(el, data) {
-    tram(el).set(tramify(data));
-  }
-
-  // Build a clean object for tram
-  function tramify(obj) {
-    var result = {};
-    var found = false;
-    for (var x in obj) {
-      if (x === 'transition') continue;
-      result[x] = obj[x];
-      found = true;
-    }
-    // If empty, return null for tram.set/stop compliance
-    return found ? result : null;
   }
 
   // Export module

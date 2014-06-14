@@ -3,7 +3,7 @@ body {
   font-family: Sansation, sans-serif;
   color: white;
   font-size: 12px;
-  line-height: 20px;
+  line-height: 18px;
 }
 h1 {
   display: block;
@@ -51,7 +51,7 @@ p {
   display: block;
   margin-bottom: 5px;
   font-size: 12px;
-  line-height: 24px;
+  line-height: 18px;
 }
 .section {
   padding-top: 30px;
@@ -82,6 +82,13 @@ p {
   padding-right: 0px;
   font-weight: 400;
 }
+.menu-link:hover {
+  position: relative;
+  top: -5px;
+  padding-bottom: 5px;
+  border-bottom: 3px solid white;
+  text-decoration: none;
+}
 .menu-options {
   padding-top: 5px;
   font-family:'Bebas Neue', sans-serif;
@@ -105,6 +112,12 @@ p {
   font-size: 12px;
   letter-spacing: 0px;
 }
+.input.input-sponsors {
+  width: 85%;
+  padding: 20px 16px;
+  font-size: 18px;
+  font-style: italic;
+}
 .search-form-wrapper {
   display: inline-block;
   margin-left: 15px;
@@ -121,6 +134,11 @@ p {
   background-repeat: no-repeat;
   text-indent: -50em;
 }
+.submit-search.submit-sponsors {
+  height: 42px;
+  padding: 18px 27px;
+  background-image: url('../images/sponsors-magnifier.png');
+}
 .logo {
   -webkit-transition: all 500ms ease;
   -o-transition: all 500ms ease;
@@ -133,6 +151,10 @@ p {
   position: relative;
   padding-top: 126px;
   padding-bottom: 126px;
+}
+.hero.hero-home.hero-sponsors {
+  padding-top: 35px;
+  padding-bottom: 35px;
 }
 .hero-call {
   margin-bottom: 20px;
@@ -179,17 +201,21 @@ p {
   max-width: 1000%;
 }
 .red-section-link {
-  -webkit-transition: all 500ms ease;
-  -o-transition: all 500ms ease;
-  transition: all 500ms ease;
+  -webkit-transition-delay: initial;
+  -o-transition-delay: initial;
+  transition-delay: initial;
   color: white;
   text-decoration: none;
 }
 .red-section-link:hover {
-  text-shadow: white 0px 1px 2px, #e0bc5a 0px 1px 9px;
+  position: relative;
+  text-shadow: none;
 }
 .red-section-link.w--current {
-  text-decoration: underline;
+  border-bottom: 3px solid white;
+}
+.red-section-link.w--current:hover {
+  text-shadow: none;
 }
 .red-section-link.school-resources-link {
   margin-left: 10px;
@@ -339,6 +365,9 @@ p {
   color: #dd202b;
   text-transform: none;
 }
+.red-block-title.centered {
+  text-align: center;
+}
 .block-column-wrapper {
   height: 100%;
 }
@@ -358,6 +387,282 @@ p {
 }
 .directory-paragraph {
   font-size: 14px;
+}
+.sponsors-form-wrapper {
+  margin-top: 35px;
+  padding: 12px 17px 20px;
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.13);
+}
+.sponsors-form-wrapper.footer-sponsors-form {
+  background-color: transparent;
+  color: #f02e4e;
+}
+.sponsors-form {
+  display: block;
+}
+.sponsors-form-title {
+  padding-left: 42px;
+  background-image: url('../images/sponsors-red-magnifier.png');
+  background-position: 0px 50%;
+  background-repeat: no-repeat;
+}
+.sponsors-form-title.footer-sponsor-form-title {
+  padding-top: 32px;
+  padding-left: 0px;
+  background-position: 0px 0px;
+  font-size: 18px;
+}
+.testimonial {
+  padding-top: 46px;
+  padding-right: 10px;
+  padding-left: 10px;
+  background-image: url('../images/testimonial.png');
+  background-position: 50% 0px;
+  background-repeat: no-repeat;
+  font-size: 11px;
+  line-height: 18px;
+  text-align: center;
+}
+.testimonial-link {
+  color: #1087ff;
+  text-decoration: underline;
+}
+.body-link {
+  color: #1087ff;
+  text-decoration: none;
+}
+.body-link:hover {
+  text-decoration: underline;
+}
+.testimonial-author {
+  margin-bottom: 10px;
+  font-family:'Sansation Bold', sans-serif;
+  line-height: 14px;
+}
+.testimonial-text {
+  font-size: 14px;
+  line-height: 18px;
+}
+.gray-section-soccer {
+  background-color: #777;
+  font-family:'Sansation Bold', sans-serif;
+  color: white;
+  font-weight: 400;
+}
+.gray-section-soccer.soccer-girl-section {
+  font-family: Sansation, sans-serif;
+}
+.soccer-girl-section {
+  padding: 20px 25px;
+}
+.soccer-girl-section.red-section {
+  position: relative;
+  background-color: #ea2333;
+  color: white;
+}
+.soccer-gray-paragraph {
+  max-width: 571px;
+  font-size: 18px;
+}
+.soccer-section-list {
+  padding-left: 0px;
+  font-family:'Sansation Bold', sans-serif;
+  font-size: 14px;
+  list-style-type: none;
+}
+.soccer-list-item {
+  width: 330px;
+  margin-bottom: 20px;
+  padding-left: 40px;
+  background-image: url('../images/yellow-check.png');
+  background-position: 0px 5px;
+  background-repeat: no-repeat;
+}
+.soccer-girl {
+  position: absolute;
+  right: -17px;
+  bottom: 0px;
+  max-width: 590px;
+}
+.three-column-red {
+  padding: 50px 21px;
+  font-family: Sansation, sans-serif;
+  text-align: center;
+}
+.three-column-percent {
+  font-family:'Open Sans', sans-serif;
+  font-size: 36px;
+  line-height: 49px;
+  font-weight: 800;
+}
+.source {
+  position: relative;
+  bottom: -24px;
+  font-family:'Sansation Bold', sans-serif;
+  color: #930000;
+  font-size: 10px;
+  line-height: 12px;
+}
+.sponsorship-adds {
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+.green-gray-section {
+  background-color: #b1b1b1;
+  background-image: url('../images/gray_green_section_bg.jpg');
+  background-position: 50% 0px;
+  background-repeat: no-repeat;
+  color: white;
+  font-size: 14px;
+  text-align: center;
+}
+.green-gray-content {
+  padding: 20px 27px;
+}
+.green-gray-title {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  color: #b7e04a;
+  font-size: 16px;
+}
+.adds-images {
+  padding-top: 45px;
+}
+.add-image {
+  margin-right: 15px;
+  margin-bottom: 16px;
+  margin-left: 15px;
+}
+.gray-row {
+  background-color: #b1b1b1;
+}
+.red-column {
+  padding-right: 0px;
+  padding-left: 0px;
+  background-color: #dd202b;
+  color: white;
+  font-size: 14px;
+}
+.adds-red-content {
+  margin-bottom: 20px;
+  padding-right: 30px;
+  padding-left: 30px;
+}
+.adds-red-title-h4 {
+  display: inline-block;
+  padding-left: 10px;
+  color: #2b2b2b;
+}
+.adds-content-paragraph {
+  line-height: 24px;
+}
+.adds-content-section {
+  padding-top: 45px;
+  padding-bottom: 45px;
+}
+.white-row {
+  background-color: #e1e1e1;
+  color: black;
+}
+.add-products-paragraph {
+  margin-top: -8px;
+  margin-bottom: 25px;
+  font-size: 14px;
+}
+.add-products-section {
+  padding: 20px 35px;
+}
+.add-products-image {
+  max-width: 110%;
+  margin-left: -17px;
+}
+.dark-gray-row {
+  background-color: #9e9e9e;
+  color: #262626;
+}
+.add-portfolio-column {
+  padding-top: 70px;
+  text-align: center;
+}
+.add-portfolio-title {
+  font-size: 22px;
+}
+.button {
+  display: inline-block;
+  padding: 9px 41px;
+  background-color: #dd202b;
+  color: white;
+  text-decoration: none;
+}
+.button:hover {
+  background-color: #930000;
+}
+.button.portfolio-button {
+  margin-top: 15px;
+}
+.add-sizes-section {
+  padding: 30px;
+}
+.add-sizes-paragraph {
+  margin-bottom: 25px;
+  font-size: 14px;
+}
+.black-section {
+  background-color: black;
+}
+.black-section.black-section-player {
+  min-height: 500px;
+  background-image: url('../images/black_section_player.png');
+  background-position: 119% 100%;
+  background-repeat: no-repeat;
+}
+.faq-section {
+  margin-top: 120px;
+  margin-bottom: 75px;
+}
+.faq-list {
+  margin-top: 17px;
+  margin-bottom: 17px;
+  padding-left: 0px;
+  list-style-type: none;
+}
+.faq-list-item {
+  margin-bottom: 10px;
+}
+.testimonials-section {
+  padding-top: 75px;
+  padding-bottom: 75px;
+  background-image: url('../images/basketball-player.png');
+  background-position: 100% 100%;
+  background-repeat: no-repeat;
+}
+.red-testimonial {
+  padding: 46px 20px 35px;
+  background-image: url('../images/red-testimonial-bg.png');
+  background-position: 50% 0px;
+  background-repeat: no-repeat;
+  text-align: center;
+}
+.gray-white-section {
+  background-image: -webkit-linear-gradient(338deg, #e7e7e7 53%, #424242 53%);
+  background-image: -o-linear-gradient(248deg, #e7e7e7 53%, #424242 53%);
+  background-image: linear-gradient(248deg, #e7e7e7 53%, #424242 53%);
+}
+.get-started-section {
+  padding: 60px 64px;
+  background-image: url('../images/plus-white-icon.png');
+  background-position: 0px 31%;
+  background-repeat: no-repeat;
+  font-size: 14px;
+}
+.phone-strong {
+  display: block;
+  padding-top: 6px;
+  font-size: 28px;
+}
+.footer-sponsor-title {
+  font-size: 26px;
 }
 html.w-mod-js *[data-ix="player-appearing"] {
   opacity: 0;
@@ -393,8 +698,36 @@ html.w-mod-js *[data-ix="text-appearing-2"] {
   .search-form {
     margin-top: 8px;
   }
+  .input.input-sponsors {
+    width: 82%;
+  }
+  .hero.hero-home.hero-sponsors {
+    padding-top: 0px;
+    padding-bottom: 0px;
+  }
   .social-links {
     bottom: -11px;
+  }
+  .soccer-section-list {
+    position: relative;
+    z-index: 2;
+  }
+  .soccer-girl {
+    right: -12px;
+    z-index: 0;
+    max-width: 410px;
+  }
+  .adds-red-title-h4 {
+    font-size: 16px;
+  }
+  .adds-content-paragraph {
+    line-height: 19px;
+  }
+  .black-section.black-section-player {
+    background-position: 200% 100%;
+  }
+  .testimonials-section {
+    background-position: 126% 100%;
   }
 }
 @media (max-width: 767px) {
@@ -417,6 +750,10 @@ html.w-mod-js *[data-ix="text-appearing-2"] {
     padding-top: 7px;
     padding-bottom: 41px;
   }
+  .hero.hero-home.hero-sponsors {
+    padding-top: 18px;
+    padding-bottom: 0px;
+  }
   .hero-call {
     padding-right: 55px;
   }
@@ -436,6 +773,36 @@ html.w-mod-js *[data-ix="text-appearing-2"] {
   .left {
     margin-bottom: 10px;
     float: none;
+  }
+  .soccer-list-item {
+    width: auto;
+  }
+  .green-gray-section {
+    background-position: 50% -128px;
+    background-size: contain;
+  }
+  .add-portfolio-column {
+    padding-bottom: 30px;
+  }
+  .black-section.black-section-player {
+    padding-bottom: 460px;
+    background-position: 50% 100%;
+  }
+  .faq-section {
+    margin-top: 30px;
+    margin-bottom: 0px;
+    text-align: center;
+  }
+  .testimonials-section {
+    background-position: 164% 100%;
+  }
+  .gray-white-section {
+    background-color: #424242;
+    background-image: none;
+    background-position: 0% 0%;
+    background-size: auto;
+    background-repeat: repeat;
+    background-attachment: scroll;
   }
 }
 @media (max-width: 479px) {
@@ -482,6 +849,28 @@ html.w-mod-js *[data-ix="text-appearing-2"] {
   .full-height-column {
     margin-bottom: 10px;
     padding-bottom: 10px;
+  }
+  .green-gray-section {
+    background-position: 50% 0px;
+  }
+  .black-section.black-section-player {
+    min-height: 10px;
+    padding-bottom: 0px;
+    background-image: none;
+    background-position: 0% 0%;
+    background-size: auto;
+    background-repeat: repeat;
+    background-attachment: scroll;
+  }
+  .testimonials-section {
+    background-image: none;
+    background-position: 0% 0%;
+    background-size: auto;
+    background-repeat: repeat;
+    background-attachment: scroll;
+  }
+  .get-started-section {
+    padding-right: 10px;
   }
 }
 

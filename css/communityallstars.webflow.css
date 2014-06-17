@@ -2,7 +2,7 @@ body {
   background-color: #dd202b;
   font-family: Sansation, sans-serif;
   color: white;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 18px;
 }
 h1 {
@@ -23,11 +23,9 @@ h2 {
 h3 {
   margin: 10px 0px 12px;
   font-family:'Sansation Bold', sans-serif;
-  color: #5c5c5c;
   font-size: 18px;
   line-height: 24px;
   font-weight: 400;
-  text-transform: uppercase;
 }
 h4 {
   margin: 10px 0px;
@@ -37,7 +35,8 @@ h4 {
 }
 h5 {
   margin: 10px 0px;
-  font-size: 12px;
+  font-family:'Sansation Bold', sans-serif;
+  font-size: 17px;
   line-height: 20px;
   font-weight: 400;
 }
@@ -49,18 +48,31 @@ h6 {
 }
 p {
   display: block;
-  margin-bottom: 5px;
-  font-size: 12px;
-  line-height: 18px;
+  margin-bottom: 15px;
+  padding-top: 5px;
+  font-size: 1em;
 }
 .section {
   padding-top: 30px;
   padding-bottom: 30px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.09);
+}
+.section.work-section {
+  padding-top: 70px;
+  padding-bottom: 70px;
+  background-color: white;
+  color: #454545;
+  font-size: 14px;
+}
+.section.work-section.gray-work-section {
+  background-color: #f2f2f2;
 }
 .main-content {
   background-color: white;
   color: #666;
+}
+.main-content.video-section-schools {
+  padding-top: 60px;
+  padding-bottom: 100px;
 }
 .main-menu {
   position: relative;
@@ -77,15 +89,15 @@ p {
   font-size: 16px;
   font-weight: 400;
 }
+.logo-header.wwu-logo-header {
+  margin-bottom: -10px;
+}
 .menu-link {
   margin-left: 15px;
   padding-right: 0px;
   font-weight: 400;
 }
 .menu-link:hover {
-  position: relative;
-  top: -5px;
-  padding-bottom: 5px;
   border-bottom: 3px solid white;
   text-decoration: none;
 }
@@ -135,6 +147,8 @@ p {
   text-indent: -50em;
 }
 .submit-search.submit-sponsors {
+  position: relative;
+  top: -1px;
   height: 42px;
   padding: 18px 27px;
   background-image: url('../images/sponsors-magnifier.png');
@@ -187,7 +201,7 @@ p {
   margin-right: 72px;
   padding-top: 18px;
   border-top: 1px solid white;
-  box-shadow: rgba(0, 0, 0, 0.09) 0px 2px 1px 0px inset;
+  box-shadow: rgba(0, 0, 0, 0.11) 0px 2px 1px 0px inset;
   font-size: 17px;
 }
 .hero-paragraph.hero-inner-paragraph {
@@ -207,15 +221,8 @@ p {
   color: white;
   text-decoration: none;
 }
-.red-section-link:hover {
-  position: relative;
-  text-shadow: none;
-}
 .red-section-link.w--current {
   border-bottom: 3px solid white;
-}
-.red-section-link.w--current:hover {
-  text-shadow: none;
 }
 .red-section-link.school-resources-link {
   margin-left: 10px;
@@ -247,6 +254,10 @@ p {
 .copyright-child {
   display: inline-block;
   margin-left: 10px;
+}
+.copyright-child.wwu-logo {
+  width: 50px;
+  margin-left: 0px;
 }
 .footer {
   background-color: #2f2f2f;
@@ -303,6 +314,7 @@ p {
   margin: 15px 15px 45px;
   padding: 30px 20px;
   border: 1px solid #797979;
+  font-size: 12px;
   text-align: center;
 }
 .right {
@@ -385,18 +397,20 @@ p {
   font-size: 15px;
   text-transform: uppercase;
 }
-.directory-paragraph {
-  font-size: 14px;
-}
 .sponsors-form-wrapper {
   margin-top: 35px;
   padding: 12px 17px 20px;
   border-radius: 10px;
-  background-color: rgba(0, 0, 0, 0.13);
+  background-color: rgba(0, 0, 0, 0.12);
 }
 .sponsors-form-wrapper.footer-sponsors-form {
   background-color: transparent;
   color: #f02e4e;
+}
+.sponsors-form-wrapper.footer-sponsors-form.white-sponsor-form-wrapper {
+  padding-top: 60px;
+  padding-right: 0px;
+  padding-left: 50px;
 }
 .sponsors-form {
   display: block;
@@ -413,36 +427,48 @@ p {
   background-position: 0px 0px;
   font-size: 18px;
 }
+.sponsors-form-title.footer-sponsor-form-title.white-sponsor-form {
+  background-image: url('../images/white-magnifier.png');
+  color: white;
+}
 .testimonial {
-  padding-top: 46px;
+  margin-top: 16px;
+  padding-top: 34px;
   padding-right: 10px;
   padding-left: 10px;
   background-image: url('../images/testimonial.png');
   background-position: 50% 0px;
   background-repeat: no-repeat;
-  font-size: 11px;
   line-height: 18px;
   text-align: center;
 }
+.testimonial.testimonial-red-color {
+  color: #f02e4e;
+}
 .testimonial-link {
   color: #1087ff;
+  font-size: 11px;
   text-decoration: underline;
 }
 .body-link {
-  color: #1087ff;
+  color: #2a80b8;
   text-decoration: none;
 }
 .body-link:hover {
   text-decoration: underline;
 }
+.body-link.spaced-link {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.body-link.black-link {
+  color: black;
+}
 .testimonial-author {
+  margin-top: -11px;
   margin-bottom: 10px;
   font-family:'Sansation Bold', sans-serif;
-  line-height: 14px;
-}
-.testimonial-text {
-  font-size: 14px;
-  line-height: 18px;
+  line-height: 16px;
 }
 .gray-section-soccer {
   background-color: #777;
@@ -471,6 +497,10 @@ p {
   font-size: 14px;
   list-style-type: none;
 }
+.soccer-section-list.soccer-list-schools {
+  margin-top: 69px;
+  margin-bottom: 52px;
+}
 .soccer-list-item {
   width: 330px;
   margin-bottom: 20px;
@@ -478,6 +508,12 @@ p {
   background-image: url('../images/yellow-check.png');
   background-position: 0px 5px;
   background-repeat: no-repeat;
+}
+.soccer-list-item.soccer-girl-list-schools {
+  width: auto;
+  margin-bottom: 0px;
+  padding-top: 8px;
+  padding-bottom: 8px;
 }
 .soccer-girl {
   position: absolute;
@@ -568,7 +604,6 @@ p {
 .add-products-paragraph {
   margin-top: -8px;
   margin-bottom: 25px;
-  font-size: 14px;
 }
 .add-products-section {
   padding: 20px 35px;
@@ -591,6 +626,7 @@ p {
 .button {
   display: inline-block;
   padding: 9px 41px;
+  border-radius: 2px;
   background-color: #dd202b;
   color: white;
   text-decoration: none;
@@ -604,10 +640,6 @@ p {
 .add-sizes-section {
   padding: 30px;
 }
-.add-sizes-paragraph {
-  margin-bottom: 25px;
-  font-size: 14px;
-}
 .black-section {
   background-color: black;
 }
@@ -620,6 +652,11 @@ p {
 .faq-section {
   margin-top: 120px;
   margin-bottom: 75px;
+}
+.faq-section.faq-schools {
+  margin-top: 20px;
+  margin-bottom: auto;
+  margin-left: 21px;
 }
 .faq-list {
   margin-top: 17px;
@@ -642,6 +679,7 @@ p {
   background-image: url('../images/red-testimonial-bg.png');
   background-position: 50% 0px;
   background-repeat: no-repeat;
+  font-size: 12px;
   text-align: center;
 }
 .gray-white-section {
@@ -656,6 +694,13 @@ p {
   background-repeat: no-repeat;
   font-size: 14px;
 }
+.get-started-section.get-started-today {
+  padding-top: 96px;
+  padding-right: 20px;
+  padding-left: 0px;
+  background-image: url('../images/green-check.png');
+  background-position: 0px 60px;
+}
 .phone-strong {
   display: block;
   padding-top: 6px;
@@ -663,6 +708,242 @@ p {
 }
 .footer-sponsor-title {
   font-size: 26px;
+}
+.red-title-h2 {
+  margin-top: 45px;
+  color: #f02e4e;
+}
+.our-work-paragraph {
+  padding-right: 40px;
+}
+.our-work-paragraph.ow-schools-paragraph {
+  line-height: 24px;
+}
+.centered {
+  text-align: center;
+}
+.small-explanation {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+.our-work-thumb {
+  max-width: 19%;
+  margin: 2px;
+}
+.block {
+  display: block;
+}
+.interactive-guide-icon {
+  margin-top: 70px;
+}
+.column-with-bottom-space {
+  margin-bottom: 30px;
+}
+.ow-media-image {
+  margin-top: 30px;
+  text-align: center;
+}
+.ow-media-image.owmi-even {
+  margin-top: 50px;
+}
+.red-gray-section {
+  background-image: -webkit-linear-gradient(left, #dd202b 50%, #999 50%);
+  background-image: -o-linear-gradient(left, #dd202b 50%, #999 50%);
+  background-image: linear-gradient(to right, #dd202b 50%, #999 50%);
+}
+.bbb-get-started {
+  margin-top: 20px;
+}
+.about-heading {
+  margin-bottom: 0px;
+  text-transform: uppercase;
+}
+.about-paragraph {
+  font-size: 12px;
+  line-height: 18px;
+}
+.soccer-girl-title {
+  position: relative;
+  top: -61px;
+  padding-top: 60px;
+}
+.soccer-girl-paragraph {
+  max-width: 36%;
+}
+.padded-left-div {
+  height: 150px;
+  padding: 10px 10px 10px 135px;
+}
+.padded-left-div.dark-padded-left {
+  background-color: #474747;
+  background-image: -webkit-linear-gradient(208deg, #474747 11%, #f13c41 11%, #f13c41 24%, #474747 24%);
+  background-image: -o-linear-gradient(118deg, #474747 11%, #f13c41 11%, #f13c41 24%, #474747 24%);
+  background-image: linear-gradient(118deg, #474747 11%, #f13c41 11%, #f13c41 24%, #474747 24%);
+  color: white;
+}
+.padded-left-div.red-div {
+  position: relative;
+  background-color: #f13c41;
+  color: white;
+}
+.peoples-title {
+  margin-top: 32px;
+  margin-right: 30px;
+  margin-left: 15px;
+  padding-right: 0px;
+  padding-left: 50px;
+  background-image: url('../images/right-arrow.png'), url('../images/people-icon.png');
+  background-position: 100% 100%, 0px 0px;
+  background-repeat: no-repeat, no-repeat;
+}
+.basketball-player {
+  position: absolute;
+  left: -29px;
+  bottom: 0px;
+  max-height: 320px;
+}
+.video-column {
+  height: 300px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  background-color: #454545;
+}
+.red-section {
+  padding-top: 60px;
+  padding-bottom: 60px;
+  background-color: #f13c41;
+}
+.red-section.our-process-section {
+  font-size: 12px;
+}
+.features-title {
+  margin-bottom: 30px;
+  padding-top: 17px;
+  padding-bottom: 17px;
+  padding-left: 74px;
+  background-image: url('../images/features-of-our.png');
+  background-position: 0px 50%;
+  background-repeat: no-repeat;
+}
+.full-width-column {
+  padding-right: 0px;
+  padding-left: 0px;
+}
+.full-width-column.features-section {
+  overflow-x: hidden;
+  overflow-y: hidden;
+  margin-bottom: 30px;
+  background-color: white;
+}
+.full-width-column.features-section.features-odd {
+  background-color: #eee;
+}
+.features-content {
+  height: 340px;
+  padding: 25px;
+  color: #454545;
+}
+.features-content-title {
+  color: #dd202b;
+}
+.features-paragraph {
+  font-size: 12px;
+  line-height: 24px;
+}
+.features-image {
+  width: 100%;
+}
+.black-text {
+  color: black;
+}
+.portfolio-thumb {
+  max-width: 24%;
+  margin: 2px;
+}
+.portfolio-thumbs {
+  margin-bottom: 70px;
+}
+.gray-section {
+  background-color: #eee;
+  color: black;
+}
+.testimonials-school-section {
+  padding-top: 80px;
+  padding-bottom: 80px;
+  background-color: #454545;
+  font-size: 12px;
+  text-align: center;
+}
+.testimonials-row {
+  margin-bottom: 46px;
+}
+.our-process-title {
+  margin-left: -62px;
+  padding-top: 41px;
+  padding-bottom: 41px;
+  padding-left: 115px;
+  background-image: url('../images/our-process.png');
+  background-position: 0px 50%;
+  background-repeat: no-repeat;
+}
+.circle-title {
+  display: block;
+  width: 114px;
+  height: 114px;
+  margin-right: auto;
+  margin-bottom: 25px;
+  margin-left: auto;
+  padding-top: 42px;
+  padding-right: 3px;
+  padding-left: 3px;
+  border-radius: 50%;
+  background-color: #930000;
+  background-image: url('../images/circles-bg.gif');
+  font-size: 14px;
+  line-height: 15px;
+  text-align: center;
+}
+.process-content {
+  margin-bottom: 70px;
+  padding-right: 25px;
+  padding-left: 25px;
+}
+.working-with-us-section {
+  padding-top: 100px;
+  padding-bottom: 100px;
+  background-image: url('../images/player-bg.jpg');
+  background-position: 50% 50%;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.wwu-red-section {
+  padding: 20px 50px;
+  background-color: transparent;
+}
+.wwu-white-section {
+  padding: 30px 36% 30px 50px;
+  background-color: white;
+  color: #f02e4e;
+  font-size: 12px;
+}
+.wwu-number {
+  margin-right: 10px;
+  font-size: 24px;
+}
+.red-row {
+  background-color: #f02e4e;
+}
+.wwu-dark {
+  padding: 50px 30px 40px 54px;
+  background-color: #454545;
+  background-image: url('../images/green-check.png');
+  background-position: 9px 61px;
+  background-repeat: no-repeat;
+  font-size: 16px;
+}
+.wwu-cas {
+  padding: 25px 20px 25px 50px;
+  font-size: 12px;
 }
 html.w-mod-js *[data-ix="player-appearing"] {
   opacity: 0;
@@ -708,9 +989,15 @@ html.w-mod-js *[data-ix="text-appearing-2"] {
   .social-links {
     bottom: -11px;
   }
+  .sponsors-form-wrapper.footer-sponsors-form.white-sponsor-form-wrapper {
+    padding-left: 20px;
+  }
   .soccer-section-list {
     position: relative;
     z-index: 2;
+  }
+  .soccer-section-list.soccer-list-schools {
+    margin-bottom: 13px;
   }
   .soccer-girl {
     right: -12px;
@@ -729,6 +1016,29 @@ html.w-mod-js *[data-ix="text-appearing-2"] {
   .testimonials-section {
     background-position: 126% 100%;
   }
+  .padded-left-div.red-div {
+    height: 240px;
+  }
+  .peoples-title {
+    margin-top: 14px;
+    margin-right: 0px;
+    margin-left: -24px;
+    padding-right: 0px;
+    padding-bottom: 16px;
+  }
+  .video-column {
+    height: auto;
+    margin-top: 80px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    background-color: transparent;
+  }
+  .features-content {
+    height: 430px;
+  }
+  .our-process-title {
+    margin-left: 0px;
+  }
 }
 @media (max-width: 767px) {
   h2 {
@@ -738,6 +1048,10 @@ html.w-mod-js *[data-ix="text-appearing-2"] {
     padding-top: 33px;
     padding-bottom: 33px;
     text-align: center;
+  }
+  .section.work-section {
+    padding-top: 36px;
+    padding-bottom: 36px;
   }
   .logo-header {
     left: 10px;
@@ -774,6 +1088,9 @@ html.w-mod-js *[data-ix="text-appearing-2"] {
     margin-bottom: 10px;
     float: none;
   }
+  .soccer-section-list.soccer-list-schools {
+    margin-top: 37px;
+  }
   .soccer-list-item {
     width: auto;
   }
@@ -797,12 +1114,85 @@ html.w-mod-js *[data-ix="text-appearing-2"] {
     background-position: 164% 100%;
   }
   .gray-white-section {
-    background-color: #424242;
     background-image: none;
     background-position: 0% 0%;
     background-size: auto;
     background-repeat: repeat;
     background-attachment: scroll;
+  }
+  .red-title-h2 {
+    margin-top: 0px;
+  }
+  .our-work-thumb {
+    width: 100px;
+  }
+  .red-gray-section {
+    padding-left: 20px;
+    background-image: none;
+    background-position: 0% 0%;
+    background-size: auto;
+    background-repeat: repeat;
+    background-attachment: scroll;
+  }
+  .soccer-girl-paragraph {
+    max-width: 100%;
+  }
+  .padded-left-div.dark-padded-left {
+    height: auto;
+    background-image: none;
+    background-position: 0% 0%;
+    background-size: auto;
+    background-repeat: repeat;
+    background-attachment: scroll;
+  }
+  .padded-left-div.red-div {
+    height: auto;
+  }
+  .peoples-title {
+    margin-top: 39px;
+    margin-right: 29px;
+    margin-left: 15px;
+    padding-left: 54px;
+    background-image: url('../images/people-icon.png');
+    background-position: 0px 0px;
+    background-repeat: no-repeat;
+  }
+  .video-column {
+    margin-top: 10px;
+  }
+  .features-content {
+    height: auto;
+  }
+  .features-image {
+    display: block;
+    width: 80%;
+    margin: 20px auto -14px;
+  }
+  .portfolio-thumb {
+    max-width: 31%;
+  }
+  .testimonials-row {
+    margin-bottom: 0px;
+  }
+  .our-process-title {
+    margin-left: 31px;
+  }
+  .process-content {
+    margin-bottom: 20px;
+    padding-right: 0px;
+    padding-left: 0px;
+  }
+  .working-with-us-section {
+    padding-top: 0px;
+    padding-bottom: 0px;
+    background-image: none;
+    background-position: 0% 0%;
+    background-size: auto;
+    background-repeat: repeat;
+    background-attachment: scroll;
+  }
+  .wwu-red-section {
+    background-color: #930000;
   }
 }
 @media (max-width: 479px) {
@@ -833,6 +1223,9 @@ html.w-mod-js *[data-ix="text-appearing-2"] {
   }
   .important {
     line-height: 68px;
+  }
+  .important.schools-important {
+    line-height: 84px;
   }
   .hero-paragraph {
     margin-right: 0px;
@@ -869,8 +1262,23 @@ html.w-mod-js *[data-ix="text-appearing-2"] {
     background-repeat: repeat;
     background-attachment: scroll;
   }
-  .get-started-section {
-    padding-right: 10px;
+  .our-work-thumb {
+    width: 150px;
+    max-width: 150px;
+  }
+  .padded-left-div.dark-padded-left {
+    padding-left: 10px;
+  }
+  .padded-left-div.red-div {
+    padding-left: 10px;
+  }
+  .features-image {
+    width: 100%;
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+  .portfolio-thumb {
+    max-width: 45%;
   }
 }
 

@@ -2768,7 +2768,7 @@ Webflow.define('tabs', function ($, _) {
  * Webflow: Interactions: Init
  */
 Webflow.require('ix').init([
-  {"slug":"player-appearing","name":"Player Appearing","value":{"style":{"opacity":0,"x":"-100%","y":"0px"},"triggers":[{"type":"load","preload":true,"stepsA":[{"wait":600},{"opacity":1,"wait":5500,"transition":"transform 500ms ease 0ms, opacity 500ms ease-in-quad 0ms","x":"0px","y":"0px"}],"stepsB":[]}]}},
+  {"slug":"player-appearing","name":"Player Appearing","value":{"style":{"opacity":0,"x":"-100%","y":"0px"},"triggers":[{"type":"load","stepsA":[{"wait":600},{"opacity":1,"wait":5500,"transition":"transform 500ms ease 0ms, opacity 500ms ease-in-quad 0ms","x":"0px","y":"0px"}],"stepsB":[]}]}},
   {"slug":"text-appearing","name":"Text Appearing","value":{"style":{"opacity":0,"x":"0px","y":"-49px"},"triggers":[{"type":"load","preload":true,"stepsA":[{"wait":1000},{"opacity":1,"wait":3000,"transition":"transform 500ms ease 0ms, opacity 500ms ease-in-quad 0ms","x":"0px","y":"0px","scale":1}],"stepsB":[]}]}},
   {"slug":"text-appearing-2","name":"Text Appearing 2","value":{"style":{"opacity":0,"x":"0px","y":"50px"},"triggers":[{"type":"load","preload":true,"stepsA":[{"wait":1200},{"opacity":1,"wait":3000,"transition":"transform 500ms ease 0ms, opacity 500ms ease-in-quad 0ms","x":"0px","y":"0px","scale":1}],"stepsB":[]}]}}
 ]);

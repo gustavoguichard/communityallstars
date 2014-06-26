@@ -963,21 +963,24 @@ p {
   background-repeat: no-repeat;
 }
 .circle-title {
-  display: block;
+  display: table;
   width: 114px;
   height: 114px;
   margin-right: auto;
   margin-bottom: 25px;
   margin-left: auto;
-  padding-top: 42px;
   padding-right: 3px;
   padding-left: 3px;
   border-radius: 50%;
   background-color: #930000;
   background-image: url('../images/circles-bg.gif');
+  text-align: center;
+}
+.circle-title h4{
+  display: table-cell;
+  vertical-align: middle;
   font-size: 14px;
   line-height: 15px;
-  text-align: center;
 }
 .process-content {
   margin-bottom: 70px;
